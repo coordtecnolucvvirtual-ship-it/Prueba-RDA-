@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biología y Ecología - Sesión 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root { --azul-oscuro: #233559; --azul-brillante: #0090ff; --azul-claro: #d6f0ff; --rojo-institucional: #E30512; --blanco: #FFFFFF; --gris-claro: #f8f9fa; --gris-medio: #e9ecef; --gris-oscuro: #343a40; --texto-color: #333333; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+body { font-family: 'Roboto', sans-serif; margin: 0; background-color: var(--gris-claro); color: var(--texto-color); line-height: 1.6; }
+#landing-page { display: flex; height: 100vh; background-color: var(--azul-oscuro); color: var(--blanco); overflow: hidden; }
+#main-container { display: none; padding-top: 70px; }
+.navbar { background-color: var(--azul-oscuro); color: var(--blanco); padding: 0 2rem; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 70px; }
+.navbar-brand { grid-column: 1 / 2; justify-self: start; }
+.navbar-brand img { height: 40px; vertical-align: middle; }
+.nav-links { grid-column: 2 / 3; justify-self: center; list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
+.nav-links li a { color: var(--blanco); text-decoration: none; padding: 1rem; display: block; transition: background-color 0.3s, color 0.3s; border-radius: 5px; margin: 0 0.2rem; font-weight: 500; }
+.nav-links li a:hover, .nav-links li a.active { background-color: var(--rojo-institucional); }
+.interactive-box.intro-card { border: none; margin-bottom: 1.5rem; } .interactive-box.intro-card:last-child { margin-bottom: 0; } .intro-card { display: flex; align-items: center; gap: 2rem; } .icon-container { background-color: var(--azul-brillante); border-radius: 50%; flex-shrink: 0; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; } .intro-card .icon { width: 100%; height: auto; } .intro-card .content { flex-grow: 1; } .intro-card .content h3 { margin-top: 0; color: var(--azul-brillante); font-size: 1.4rem; } .intro-card .content ul { padding-left: 20px; margin-bottom: 0; } @media (max-width: 768px) { .intro-card { flex-direction: column; text-align: center; } .intro-card .content ul { text-align: left; } }
+.download-btn { background-color: var(--rojo-institucional); color: var(--blanco); border: none; padding: 0.7rem 1.2rem; border-radius: 50px; cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: background-color 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+.download-btn:hover { background-color: #c4040f; }
+.main-content { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+.content-section { display: none; background-color: var(--blanco); padding: 2rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); animation: fadeIn 0.5s ease-in-out; margin-bottom: 2rem; }
+.content-section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.cover-text-container { width: 45%; padding: 2rem 4rem; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
+.cover-top-row { display: flex; align-items: center; margin-bottom: auto; }
+.cover-top-row .uni-logo { max-height: 40px; }
+.cover-top-row .divider { width: 2px; height: 35px; background-color: var(--blanco); margin: 0 1.5rem; }
+.cover-top-row .career-name { font-weight: 500; font-size: 1.1rem; }
+.cover-text-content { margin-bottom: auto; }
+.cover-text-content h1 { font-size: 3rem; color: var(--blanco); border-bottom: none; font-weight: 600; margin: 0 0 1rem 0; line-height: 1.2; }
+.cover-text-content .session-name { font-size: 1.5rem; font-weight: 550; margin-bottom: 2rem; }
+.cover-topics h4 { color: var(--azul-brillante); border-bottom: 2px solid var(--azul-brillante); padding-bottom: 0.5rem; display: inline-block; font-weight: 500; margin-top: 0; }
+.cover-topics p { font-size: 1rem; text-align: left; margin-bottom: 1.5rem; }
+#start-btn { background-color: var(--rojo-institucional); color: var(--blanco); border: none; padding: 1rem 2.5rem; font-size: 1.2rem; font-weight: 500; border-radius: 50px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; align-self: flex-start; margin-top: 2rem; }
+#start-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.cover-image-container { width: 55%; height: 100vh; background-size: cover; background-position: center; border-top-left-radius: 150px; border-bottom-left-radius: 150px; }
+.visual-element { background-color: var(--azul-claro); border: 1px solid var(--azul-brillante); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center; }
+.visual-element h5 { margin: 0 0 1rem 0; color: var(--azul-oscuro); }
+.visual-placeholder { background-color: var(--azul-brillante); color: var(--blanco); border-radius: 8px; padding: 2rem; min-height: 150px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 500; text-align: center; }
+.diagram-flow { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; }
+.diagram-arrow { font-size: 2rem; color: var(--azul-oscuro); margin: 0 1rem; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.gallery-grid .visual-placeholder { min-height: 120px; font-size: 1rem; }
+.comparison-table { width: 100%; border-collapse: collapse; margin-top: 1rem; overflow-x: auto; display: block; }
+.comparison-table th, .comparison-table td { border: 1px solid var(--gris-medio); padding: 0.8rem; text-align: left; }
+.comparison-table th { background-color: var(--azul-oscuro); color: var(--blanco); }
+.comparison-table tr:nth-child(even) { background-color: var(--azul-claro); }
+h1, h2, h3, h4 { color: var(--azul-oscuro); font-weight: 700; }
+h1 { font-size: 2.5rem; margin-bottom: 1rem; border-bottom: 3px solid var(--azul-brillante); padding-bottom: 0.5rem; }
+h2 { font-size: 2rem; margin-top: 0; margin-bottom: 1rem; }
+h3 { font-size: 1.5rem; color: var(--azul-brillante); margin-top: 1.5rem; margin-bottom: 0.8rem; }
+h4 { font-size: 1.2rem; color: var(--rojo-institucional); margin-top: 1rem; margin-bottom: 0.5rem; }
+p, li { font-size: 1rem; text-align: justify; }
+blockquote { border-left: 5px solid var(--gris-medio); padding-left: 1.5rem; margin: 1.5rem 0; font-style: italic; color: #555; }
+.interactive-box { background-color: var(--azul-claro); border: 1px solid var(--azul-brillante); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.reflection-question textarea { width: 100%; padding: 0.8rem; border-radius: 5px; border: 1px solid var(--gris-medio); margin-top: 0.5rem; margin-left: 1rem; font-size: 1rem; min-height: 100px; resize: vertical; font-family: 'Roboto', sans-serif; box-sizing: border-box; }
+.tablet-frame { position: relative; max-width: 800px; margin: 2rem auto; background: #222; border-radius: 40px; padding: 25px; border: 2px solid #444; }
+.tablet-frame::before { content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 60px; height: 5px; background: #111; border-radius: 10px; }
+.tablet-screen { position: relative; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 15px; overflow: hidden; }
+.tablet-screen iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+.accordion-item { border: 1px solid var(--gris-medio); margin-bottom: 0.5rem; border-radius: 5px; overflow: hidden; }
+.accordion-header { background-color: var(--gris-claro); padding: 1rem; cursor: pointer; font-weight: 600; color:  #233559; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s; }
+.accordion-header:hover { background-color: var(--gris-medio); }
+.accordion-header::after { content: '+'; font-size: 1.5rem; color: var(--azul-brillante); transition: transform 0.3s; }
+.accordion-item.active .accordion-header::after { transform: rotate(45deg); }
+.accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out, padding 0.5s ease-out; padding: 0 1rem; }
+.accordion-item.active .accordion-content { padding: 1rem; }
+#conclusiones .accordion-content li { margin-bottom: 1rem; }
+.quiz-container { margin-top: 2rem; }
+.quiz-question { background-color: var(--blanco); border: 1px solid var(--gris-medio); font-weight: 600; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; }
+.quiz-options button { display: block; width: 100%; text-align: left; padding: 0.8rem; margin-top: 0.5rem; margin-left: 1rem; border: 1px solid var(--gris-medio); border-radius: 5px; background-color: var(--gris-claro); cursor: pointer; transition: background-color 0.3s, border-color 0.3s, color 0.3s; font-family: 'Roboto', sans-serif; font-size: 1rem; }
+.quiz-options button:hover:not(:disabled) { background-color: var(--gris-medio); }
+.quiz-options button:disabled { cursor: not-allowed; opacity: 0.7; }
+.quiz-options button.correct { background-color: #d4edda; border-color: #c3e6cb; color: #155724; font-weight: bold; }
+.quiz-options button.incorrect { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+.quiz-feedback { margin-top: 1rem; padding: 1rem; border-radius: 5px; display: none; font-weight: 500; }
+.quiz-feedback.correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+.quiz-feedback.incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+.game-container { background-color: var(--blanco); padding: 2rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 2rem; text-align: center; }
+.game-container h2 { color: var(--azul-oscuro); margin-top: 0; text-align: center; }
+.game-instructions { text-align: center; margin-bottom: 1.5rem; font-style: italic; color: #555; }
+#word-search-grid { display: grid; grid-template-columns: repeat(10, 40px); gap: 2px; justify-content: center; margin-bottom: 1rem; }
+.ws-cell { width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--gris-medio); background-color: var(--blanco); cursor: pointer; font-size: 1.2rem; font-weight: 500; transition: background-color 0.2s; user-select: none; }
+.ws-cell.selected { background-color: var(--azul-brillante); color: var(--blanco); }
+.ws-cell.found { background-color: #28a745; color: var(--blanco); }
+#ws-word-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
+#ws-word-list li { text-align: center; padding: 0.5rem 1rem; background-color: var(--gris-claro); border-radius: 5px; font-weight: 500; transition: background-color 0.3s; }
+#ws-word-list li.found { text-decoration: line-through; background-color: #d4edda; color: #155724; }
+#hangman-display { display: flex; justify-content: center; align-items: center; gap: 1rem; margin: 1rem 0; }
+#hangman-drawing { width: 150px; height: 180px; }
+#word-display { font-size: 2rem; letter-spacing: 10px; color: var(--azul-oscuro); font-family: 'Courier New', Courier, monospace; font-weight: bold; }
+#keyboard { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; max-width: 500px; margin-left: auto; margin-right: auto; }
+#keyboard button { font-size: 1rem; width: 40px; height: 40px; cursor: pointer; border-radius: 5px; border: 1px solid var(--azul-brillante); background-color: var(--blanco); color: var(--azul-brillante); transition: all 0.2s; font-family: 'Roboto', sans-serif; font-weight: bold; }
+#keyboard button:hover:not(:disabled) { background-color: var(--azul-brillante); color: var(--blanco); }
+#keyboard button:disabled { background-color: var(--gris-medio); color: #aaa; cursor: not-allowed; border-color: #ccc; }
+.game-message { margin-top: 1rem; font-weight: bold; min-height: 24px; font-size: 1.2rem; color: var(--rojo-institucional); }
+.reset-game-btn { background-color: var(--rojo-institucional); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 1rem; font-family: 'Roboto', sans-serif; transition: opacity 0.2s; }
+.reset-game-btn:hover { opacity: 0.9; }
+.references-list p { text-indent: -3em; padding-left: 3em; text-align: left; margin-bottom: 1rem; }
+.references-list a { color: var(--azul-brillante); text-decoration: none; }
+.references-list a:hover { text-decoration: underline; }
+.pdf-prepare-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); color: white; display: none; justify-content: center; align-items: center; font-size: 1.5rem; z-index: 2000; flex-direction: column; text-align: center; }
+.spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 4px solid #fff; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 1rem; }
+#matching-game-container { display: flex; justify-content: space-around; gap: 2rem; flex-wrap: wrap; } .matching-column { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 0.75rem; } .matching-column h3 { margin-top: 0; text-align: center; color: var(--azul-oscuro); } .match-item { border: 2px solid var(--gris-medio); background-color: var(--blanco); padding: 1rem; border-radius: 8px; cursor: pointer; transition: all 0.2s ease-in-out; text-align: left; } .match-item:hover { border-color: var(--azul-brillante); transform: translateY(-2px); } .match-item.selected { background-color: var(--azul-claro); border-color: var(--azul-brillante); box-shadow: 0 4px 8px rgba(0, 144, 255, 0.2); } .match-item.correct { background-color: #d4edda; border-color: #c3e6cb; color: #155724; cursor: not-allowed; } .match-item.incorrect { animation: shake 0.5s; background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; } @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } #matching-score { width: 100%; text-align: center; font-weight: bold; font-size: 1.1rem; color: var(--azul-brillante); margin-bottom: 1rem; }
+.caja-destacada { background-color: var(--azul-claro); border-left: 5px solid var(--azul-brillante); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+.caja-destacada p { margin: 0; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@media (max-width: 992px) { #main-container { padding-top: 150px; } .navbar { display: flex; padding: 0 1rem; flex-wrap: wrap; height: auto; } .navbar-brand { grid-column: auto; justify-self: auto; width: 100%; text-align: center; padding: 0.5rem 0; } .nav-links { grid-column: auto; justify-self: auto; justify-content: center; width: 100%; flex-wrap: wrap; } .nav-links li a, .download-btn { padding: 0.8rem; font-size: 0.9rem; } #landing-page { flex-direction: column; height: auto; min-height: 100vh; } .cover-text-container, .cover-image-container { width: 100%; } .cover-image-container { display: none; } .cover-text-container { padding: 2rem; text-align: center; } .cover-top-row { padding: 1rem; justify-content: center; } .cover-top-row .career-name, .cover-top-row .divider { display: none; } .cover-text-content h1 { text-align: center; } #start-btn { align-self: center; } .diagram-flow { flex-direction: column; } .diagram-arrow { transform: rotate(90deg); margin: 0.5rem 0; } }
+@media (max-width: 768px) { .main-content, .content-section { padding: 1.5rem; } h1 { font-size: 2rem; } h2 { font-size: 1.7rem; } h3 { font-size: 1.3rem; } .cover-text-content h1 { font-size: 2.5rem; } #word-search-grid { grid-template-columns: repeat(10, 30px); } .ws-cell { width: 30px; height: 30px; font-size: 1rem; } }
+@media (max-width: 480px) { .nav-links { flex-direction: column; align-items: center; } .nav-links li { width: 100%; text-align: center; } .download-btn { width: 90%; margin: 0.5rem auto; } #main-container { padding-top: 360px; } #word-search-grid { grid-template-columns: repeat(10, 25px); } .ws-cell { width: 25px; height: 25px; font-size: 0.8rem; } }
+</style>
+</head>
+<body>
+<!-- PÁGINA DE PORTADA -->
+<div id="landing-page">
+  <div class="cover-text-container">
+    <div class="cover-top-row">
+      <img src="https://via.placeholder.com/160x60?text=Logo" alt="Logo Institucional" class="uni-logo">
+      <div class="divider"></div>
+      <span class="career-name">Ingeniería Ambiental</span>
+    </div>
+    <div class="cover-text-content">
+      <h1>Biología y Ecología</h1>
+      <p class="session-name">Sesión 3</p>
+      <div class="cover-topics">
+        <h4>Tema 5</h4>
+        <p>Respiración Celular y Fotosíntesis</p>
+        <h4>Tema 6</h4>
+        <p>Clasificación de los Seres Vivos: Diversidad de Procariontes y Virus</p>
+      </div>
+      <button id="start-btn">Iniciar</button>
+    </div>
+  </div>
+  <div class="cover-image-container" style="background-image: url('https://images.unsplash.com/photo-1543807535-eceef0bc6592?auto=format&fit=crop&w=1600&q=80');"></div>
+</div>
+<!-- CONTENEDOR PRINCIPAL DEL CURSO -->
+<div id="main-container">
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a href="#portada" id="back-to-cover">
+      <img src="https://via.placeholder.com/160x60?text=Logo" alt="Logo Institucional">
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#introduccion" class="nav-link active">Introducción</a></li>
+    <li><a href="#video" class="nav-link">Motivación</a></li>
+    <li><a href="#tema1" class="nav-link">Tema 5</a></li>
+    <li><a href="#tema2" class="nav-link">Tema 6</a></li>
+    <li><a href="#conclusiones" class="nav-link">Conclusiones</a></li>
+    <li><a href="#consolidacion" class="nav-link">Consolidación</a></li>
+    <li><a href="#referencias" class="nav-link">Referencias</a></li>
+    <li><button class="download-btn" id="download-pdf" style="margin-left: 1rem;"><svg xmlns="http://www.w3.org/2000/svg" height="1.2em" viewBox="0 0 24 24" width="1.2em" fill="currentColor"> <path d="M0 0h24v24H0V0z" fill="none"/> <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/> </svg> <span>Descargar</span></button></li>
+  </ul>
+</nav>
+<main class="main-content">
+<section id="introduccion" class="content-section active">
+  <h1>Introducción a Biología y Ecología</h1>
+  <div class="interactive-box intro-card">
+    <div class="icon-container"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="Icono de Resultado de aprendizaje" class="icon"></div>
+    <div class="content"><h3>Resultado de aprendizaje</h3>
+      <ul>
+        <li>Conoce las bases moleculares y celulares que controlan los diferentes procesos fisiológicos de los seres vivos y relaciona la biología con la ingeniería ambiental.</li>
+        <li>Describe los tipos de metabolismo celular y la diversidad de los seres vivos en el ambiente.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="interactive-box intro-card">
+    <div class="icon-container"><img src="https://cdn-icons-png.flaticon.com/512/1484/1484589.png" alt="Icono de Evidencia de aprendizaje" class="icon"></div>
+    <div class="content"><h3>Evidencia de aprendizaje</h3>
+      <ul>
+        <li>Producto Académico Colaborativo (PAC):</li>
+        <li>Práctica de laboratorio: fotosíntesis.</li>
+        <li>Práctica de laboratorio: reconocimiento de características de microorganismos de interés ambiental.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section id="video" class="content-section">
+  <h1>Video motivacional: Respiración celular y fotosíntesis</h1>
+  <div class="tablet-frame">
+    <div class="tablet-screen">
+      <iframe src="https://www.youtube.com/embed/JYSm79-IIHw" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+  <p style="text-align: center; margin-top: 1rem;">Fuente: <a href="https://www.youtube.com/watch?v=JYSm79-IIHw" target="_blank">https://www.youtube.com/watch?v=JYSm79-IIHw</a></p>
+  <div class="interactive-box">
+    <h3>Preguntas de reflexión</h3>
+    <div class="reflection-question">
+      <p><strong>1.</strong> ¿Qué implicaciones éticas y ambientales surgen al utilizar microorganismos modificados genéticamente para resolver problemas de contaminación?</p>
+      <textarea placeholder="Escribe tu reflexión aquí..."></textarea>
+    </div>
+    <div class="reflection-question">
+      <p><strong>2.</strong> Si los procesos celulares como la fotosíntesis y la respiración son esenciales para la vida, ¿por qué crees que muchas veces se subestima su relevancia en la toma de decisiones ambientales y políticas públicas?</p>
+      <textarea placeholder="Escribe tu reflexión aquí..."></textarea>
+    </div>
+    <div class="reflection-question">
+      <p><strong>3.</strong> ¿Cómo cambiaría tu enfoque profesional si consideraras a los microorganismos como aliados estratégicos en la restauración ecológica y no solo como agentes patógenos?</p>
+      <textarea placeholder="Escribe tu reflexión aquí..."></textarea>
+    </div>
+  </div>
+</section>
+<section id="tema1" class="content-section">
+  <h1>Respiración Celular y Fotosíntesis</h1>
+  <p>La respiración celular y la fotosíntesis son procesos bioquímicos esenciales que permiten la transformación de energía en formas aprovechables por los organismos vivos. Estos mecanismos no solo sustentan la vida a nivel celular, sino que también tienen implicancias ecológicas y ambientales de gran relevancia. La fotosíntesis, al capturar dióxido de carbono y liberar oxígeno, contribuye directamente al equilibrio atmosférico y al ciclo del carbono, mientras que la respiración celular permite la liberación controlada de energía para el funcionamiento de las células. En el contexto de la ingeniería ambiental, comprender estos procesos es fundamental para interpretar dinámicas ecológicas, evaluar la productividad de ecosistemas, diseñar estrategias de mitigación del cambio climático y desarrollar tecnologías sostenibles como la bioenergía. Además, estos conocimientos permiten analizar la eficiencia metabólica de organismos utilizados en restauración ecológica, agricultura regenerativa y tratamiento biológico de residuos.</p>
+  <p>Esta temática ofrece al estudiante una oportunidad para integrar conceptos celulares con problemáticas ambientales reales, reconociendo que los procesos microscópicos tienen repercusiones macroscópicas en la salud del planeta. El estudio de la fotosíntesis y la respiración celular no solo fortalece la comprensión de la biología funcional, sino que también habilita la aplicación de estos saberes en contextos territoriales, sociales y tecnológicos.</p>
+  <div class="accordion">
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 1: Concepto y función de la fotosíntesis</div>
+      <div class="accordion-content">
+        <div class="caja-destacada"><p>La fotosíntesis es un proceso bioquímico fundamental mediante el cual ciertos organismos autótrofos —principalmente plantas, algas y cianobacterias— convierten la energía solar en energía química almacenada en moléculas orgánicas, como la glucosa. Este proceso ocurre en los cloroplastos, organelos especializados que contienen pigmentos como la clorofila, capaces de captar la luz solar.</p></div>
+        <p>La fotosíntesis se divide en dos fases principales:</p>
+        <ul>
+          <li><strong>Fase luminosa:</strong> ocurre en las membranas de los tilacoides, donde la energía solar se transforma en energía química (ATP y NADPH), liberando oxígeno como subproducto a partir de la fotólisis del agua.</li>
+          <li><strong>Fase oscura o ciclo de Calvin:</strong> se realiza en el estroma del cloroplasto, donde el dióxido de carbono (CO₂) se fija y se transforma en glucosa utilizando el ATP y el NADPH generados en la fase luminosa.</li>
+        </ul>
+        <p>Este proceso no solo es vital para el metabolismo de los organismos fotosintéticos, sino que también tiene un impacto directo en el equilibrio ecológico global, ya que produce el oxígeno necesario para la respiración de la mayoría de los seres vivos, fija el carbono atmosférico y sostiene las redes tróficas como base primaria de energía. Desde una perspectiva de ingeniería ambiental, la fotosíntesis representa un mecanismo natural de captura de carbono, esencial en estrategias de mitigación del cambio climático, restauración ecológica y diseño de sistemas productivos sostenibles.</p>
+        <div class="visual-element">
+          <h5>Mapa conceptual sugerido</h5>
+          <div class="visual-placeholder">Visualiza un diagrama de flujo que conecte la fase luminosa y el ciclo de Calvin con la captura de carbono y la liberación de oxígeno.</div>
+        </div>
+        <h4>Ejemplos o casos subtema 1</h4>
+        <p><strong>Ejemplo aplicado.</strong> En proyectos de reforestación urbana en Lima, se seleccionan especies vegetales nativas con alta eficiencia fotosintética, como el <em>Schinus molle</em> (molle serrano), para mejorar la calidad del aire, reducir la temperatura local y capturar CO₂ atmosférico. Estas especies, además de adaptarse bien al clima seco, contribuyen a la restauración ecológica de espacios públicos degradados.</p>
+        <p><strong>Conexión teoría-práctica profesional.</strong> Comprender el proceso de fotosíntesis permite a los profesionales en ingeniería ambiental evaluar la capacidad de captura de carbono de distintas especies vegetales, seleccionar las más adecuadas para proyectos de restauración y diseñar infraestructura verde en zonas urbanas. Además, este conocimiento es clave en el desarrollo de tecnologías como biofiltros vegetales, cultivos energéticos y sistemas agroforestales, donde la eficiencia fotosintética determina la productividad y sostenibilidad del sistema. La fotosíntesis, por tanto, no es solo un proceso biológico, sino una herramienta estratégica para enfrentar desafíos ambientales contemporáneos como el cambio climático, la pérdida de biodiversidad y la contaminación atmosférica.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 2: Concepto y función de la respiración celular</div>
+      <div class="accordion-content">
+        <div class="caja-destacada"><p>La respiración celular es un proceso metabólico esencial mediante el cual las células transforman la energía química contenida en moléculas orgánicas, principalmente la glucosa, en ATP (adenosín trifosfato), la principal fuente de energía utilizable por la célula. Este proceso ocurre en las mitocondrias de las células eucariotas y en el citoplasma de las procariotas, y permite que los organismos mantengan sus funciones vitales como el crecimiento, la reproducción, el transporte activo y la síntesis de biomoléculas.</p></div>
+        <p>La respiración celular puede ser aeróbica (cuando utiliza oxígeno) o anaeróbica (cuando no lo utiliza). La forma aeróbica es más eficiente y consta de tres etapas principales:</p>
+        <ul>
+          <li><strong>Glucólisis:</strong> ocurre en el citoplasma; la glucosa se divide en dos moléculas de ácido pirúvico, generando una pequeña cantidad de ATP.</li>
+          <li><strong>Ciclo de Krebs (o ciclo del ácido cítrico):</strong> se realiza en la matriz mitocondrial; el ácido pirúvico se transforma en CO₂ y se generan electrones de alta energía.</li>
+          <li><strong>Cadena de transporte de electrones:</strong> ocurre en la membrana interna de la mitocondria; los electrones se transfieren a través de proteínas, generando un gradiente que permite la síntesis de ATP y la formación de agua.</li>
+        </ul>
+        <p>Este proceso es complementario a la fotosíntesis: mientras que la fotosíntesis fija carbono y produce glucosa, la respiración celular libera carbono y utiliza esa glucosa para obtener energía. Desde la perspectiva de la ingeniería ambiental, la respiración celular es clave para comprender la eficiencia metabólica de los organismos, su capacidad de adaptación a condiciones ambientales adversas y su rol en procesos como la degradación de materia orgánica, la bioenergía y la biorremediación.</p>
+        <h4>Ejemplos o casos subtema 2</h4>
+        <p><strong>Ejemplo aplicado.</strong> En estudios de resiliencia vegetal en zonas áridas del norte peruano, se analiza la eficiencia de la respiración celular en especies como el <em>Prosopis pallida</em> (algarrobo), que muestra una alta capacidad de mantener su metabolismo activo bajo condiciones de estrés hídrico. Esta eficiencia respiratoria permite su uso en proyectos de reforestación y recuperación de suelos degradados.</p>
+        <p><strong>Conexión teoría-práctica profesional.</strong> Comprender la respiración celular permite a los profesionales en ingeniería ambiental evaluar la viabilidad de especies vegetales y microorganismos en proyectos de restauración ecológica, agricultura sostenible y tratamiento biológico de residuos. Por ejemplo, en biodigestores, se seleccionan bacterias anaerobias con alta eficiencia respiratoria para transformar residuos orgánicos en biogás. Además, este conocimiento es útil para modelar el metabolismo energético de organismos utilizados en biofiltros, humedales artificiales y sistemas agroecológicos, donde la capacidad de generar ATP determina la funcionalidad y sostenibilidad del sistema. La respiración celular, por tanto, no es solo un proceso interno, sino una herramienta estratégica para diseñar soluciones ambientales basadas en procesos biológicos.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 3: Relación entre fotosíntesis y respiración celular</div>
+      <div class="accordion-content">
+        <p>La fotosíntesis y la respiración celular son procesos bioquímicos complementarios que forman parte de un ciclo energético fundamental para la vida en la Tierra. Aunque ocurren en organismos distintos o en diferentes momentos del metabolismo celular, están profundamente interconectados a nivel molecular, ecológico y funcional.</p>
+        <p>La fotosíntesis convierte la energía solar en energía química, almacenada en moléculas de glucosa, y libera oxígeno como subproducto. Por su parte, la respiración celular utiliza esa glucosa y el oxígeno para producir ATP, liberando dióxido de carbono y agua. Esta interdependencia permite el flujo de energía y la recirculación de materia en los ecosistemas, sostiene las redes tróficas, regula la composición atmosférica y permite la homeostasis planetaria.</p>
+        <div class="visual-element">
+          <h5>Infografía sugerida</h5>
+          <div class="visual-placeholder">Representa el ciclo cerrado entre producción de glucosa y consumo de oxígeno en fotosíntesis y respiración.</div>
+        </div>
+        <p>Para los estudiantes de ingeniería ambiental, comprender esta relación es clave para diseñar sistemas productivos sostenibles, evaluar la eficiencia energética de procesos biotecnológicos y proponer estrategias de mitigación del cambio climático que aprovechen la complementariedad entre ambos procesos.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 4: Impacto ambiental de los procesos celulares</div>
+      <div class="accordion-content">
+        <div class="caja-destacada"><p>Los procesos celulares, como la fotosíntesis, la respiración celular y la fermentación, sostienen la vida, pero su aplicación o intensificación en contextos industriales, agrícolas o biotecnológicos puede generar impactos ambientales significativos al alterar los ciclos ecológicos.</p></div>
+        <p>Desde una perspectiva bioecológica, los procesos celulares participan activamente en los ciclos biogeoquímicos que regulan el equilibrio planetario:</p>
+        <ul>
+          <li><strong>Fotosíntesis:</strong> captura CO₂ y libera O₂, contribuyendo a la regulación climática como sumidero de carbono (Taiz &amp; Zeiger, 2010).</li>
+          <li><strong>Respiración celular:</strong> libera CO₂ al oxidar glucosa; su intensificación industrial puede aumentar gases de efecto invernadero (Alberts et al., 2015).</li>
+          <li><strong>Fermentación:</strong> usada en alimentos, bebidas y biocombustibles; genera residuos orgánicos que requieren gestión para evitar contaminación hídrica (Sharma et al., 2020).</li>
+          <li><strong>Cultivos celulares y biotecnología:</strong> implican manipulación genética que puede generar residuos biológicos y riesgos de contaminación genética si no hay bioseguridad (Xu et al., 2025).</li>
+          <li><strong>Impacto acumulativo:</strong> la expansión industrial de estos procesos puede alterar el equilibrio ecológico, aumentar la huella de carbono y generar conflictos socioambientales.</li>
+        </ul>
+        <h4>Ejemplos de aplicación subtema 4</h4>
+        <p><strong>Producción de etanol a partir de caña de azúcar en Brasil.</strong> La fermentación de azúcares con <em>Saccharomyces cerevisiae</em> produce etanol y CO₂, pero genera vinaza, un residuo líquido con alta carga orgánica. Si no se trata, puede contaminar cuerpos de agua, afectar biodiversidad acuática y generar olores desagradables (Goldemberg et al., 2008).</p>
+        <p><strong>Conexión entre teoría y práctica.</strong> Este caso muestra cómo un proceso celular puede ser aprovechado para fines energéticos sostenibles y, a la vez, producir externalidades ambientales. Desde la ingeniería ambiental se requieren diseños de tratamiento como biodigestores anaerobios para transformar vinaza en biogás y biofertilizantes, evaluaciones de impacto ambiental, y análisis de ciclo de vida para mejorar eficiencia y reducir impactos.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 5: Aplicaciones biotecnológicas de la fotosíntesis y respiración</div>
+      <div class="accordion-content">
+        <p>La biotecnología moderna aprovecha los procesos celulares fundamentales para desarrollar soluciones innovadoras en energía, agricultura, salud y ambiente. Fotosíntesis y respiración celular se han adaptado para fines tecnológicos y ambientales.</p>
+        <h4>Aplicaciones de la fotosíntesis en biotecnología ambiental</h4>
+        <ul>
+          <li><strong>Producción de biocombustibles:</strong> microalgas fotosintéticas se cultivan para generar biodiésel, bioetanol y biogás; crecen rápido y pueden usar aguas residuales (Chisti, 2007).</li>
+          <li><strong>Captura de carbono:</strong> sistemas biofotovoltaicos y biorreactores con algas capturan CO₂ industrial, mitigando el cambio climático.</li>
+          <li><strong>Producción de biomateriales:</strong> plantas modificadas genéticamente producen bioplásticos y compuestos farmacéuticos mediante rutas fotosintéticas optimizadas (Xu et al., 2025).</li>
+        </ul>
+        <h4>Aplicaciones de la respiración celular en biotecnología ambiental</h4>
+        <ul>
+          <li><strong>Biodigestión anaerobia:</strong> microorganismos descomponen residuos orgánicos sin oxígeno, generando biogás y digestato útil como fertilizante (Appels et al., 2008).</li>
+          <li><strong>Tratamiento de aguas residuales:</strong> bacterias aeróbicas y anaeróbicas degradan contaminantes orgánicos en lodos activados, filtros biológicos y reactores anaerobios.</li>
+          <li><strong>Biorremediación:</strong> microorganismos respiradores de metales pesados o compuestos tóxicos limpian suelos y aguas contaminadas, como <em>Geobacter sulfurreducens</em> en sitios con uranio (Lovley et al., 2011).</li>
+        </ul>
+        <h4>Ejemplos de aplicación subtema 5</h4>
+        <p><strong>Cultivo de microalgas para producción de biodiésel en Colombia.</strong> Proyectos con <em>Chlorella vulgaris</em> y <em>Spirulina platensis</em> aprovechan la fotosíntesis para crecer rápidamente, incluso en aguas residuales, acumulando lípidos transformables en combustibles. El proceso reduce la carga contaminante de efluentes, captura CO₂ y genera subproductos como fertilizantes y alimentos para animales.</p>
+        <p><strong>Conexión entre teoría y práctica.</strong> Este ejemplo evidencia cómo los principios bioquímicos de la fotosíntesis se aplican en soluciones tecnológicas para mitigar el cambio climático, reducir la dependencia de combustibles fósiles y mejorar la gestión de residuos líquidos. Requiere diseñar fotobiorreactores eficientes, evaluar impactos ambientales y analizar la viabilidad económica y energética para escalar.</p>
+      </div>
+    </div>
+  </div>
+  <h3>Autoevaluación</h3>
+  <div class="quiz-container" id="quiz-tema1"></div>
+</section>
+<section id="tema2" class="content-section">
+  <h2>Clasificación de los Seres Vivos: Diversidad de Procariontes y Virus</h2>
+  <p>La clasificación de los seres vivos es una herramienta fundamental en biología para organizar, comprender y estudiar la diversidad de formas de vida que habitan el planeta. En particular, el análisis de los procariontes (bacterias y arqueas) y los virus permite acceder a un universo microscópico de organismos que desempeñan funciones clave en los ecosistemas, en la salud ambiental y en la biotecnología. Para los estudiantes de ingeniería ambiental, conocer la clasificación y diversidad microbiana permite seleccionar organismos adecuados para tareas específicas como el monitoreo ecológico, la biorremediación, el control biológico y el diseño de tecnologías limpias.</p>
+  <div class="accordion">
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 1: Principios de la clasificación biológica</div>
+      <div class="accordion-content">
+        <p>La clasificación biológica es una herramienta fundamental en biología y ecología, ya que permite organizar y comprender la diversidad de los seres vivos. Para los estudiantes de ingeniería ambiental, este conocimiento es esencial para identificar organismos clave en los ecosistemas, evaluar su función ecológica y aplicar estrategias de conservación, monitoreo ambiental y biorremediación.</p>
+        <p>La clasificación biológica, también conocida como taxonomía, se encarga de identificar, nombrar y organizar a los seres vivos en grupos jerárquicos basados en sus características compartidas. Esta organización facilita el estudio de la biodiversidad, la evolución y las relaciones ecológicas entre organismos.</p>
+        <ul>
+          <li><strong>Jerarquía taxonómica:</strong> dominio, reino, filo o división, clase, orden, familia, género y especie.</li>
+          <li><strong>Nomenclatura binomial:</strong> sistema que asigna a cada especie un nombre científico compuesto por el género y el epíteto específico.</li>
+          <li><strong>Criterios de clasificación:</strong> morfología, fisiología, genética y relaciones filogenéticas.</li>
+          <li><strong>Sistemática moderna:</strong> utiliza herramientas moleculares como la filogenia molecular para establecer relaciones evolutivas precisas.</li>
+          <li><strong>Importancia ecológica:</strong> la clasificación permite identificar especies clave en los ecosistemas y diseñar estrategias de conservación y manejo ambiental.</li>
+        </ul>
+        <h4>Ejemplos o casos subtema 1</h4>
+        <p><strong>Estudio de la biodiversidad microbiana en suelos amazónicos del Perú.</strong> Investigadores del Instituto de Investigaciones de la Amazonía Peruana (IIAP) han realizado estudios taxonómicos de microorganismos presentes en suelos de la región Loreto. Mediante técnicas de secuenciación genética, se han identificado nuevas especies de bacterias pertenecientes al género <em>Streptomyces</em>, con potencial para la producción de antibióticos y para la biorremediación de suelos contaminados con metales pesados.</p>
+        <p>Este trabajo ha permitido ampliar el conocimiento sobre la biodiversidad microbiana en ecosistemas tropicales, identificar especies con aplicaciones biotecnológicas en salud y medio ambiente, y promover la conservación de suelos como reservorios de diversidad genética. La clasificación precisa de especies es clave para evaluar el estado ecológico de un ambiente y su capacidad de resiliencia.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 2: Características de los procariontes</div>
+      <div class="accordion-content">
+        <p>Los procariontes, que incluyen bacterias y arqueas, representan los organismos más antiguos y simples en la historia evolutiva de la vida. Su estudio es esencial en biología y ecología, y particularmente relevante para la ingeniería ambiental, dado su papel clave en procesos como la biorremediación, el reciclaje de nutrientes, el tratamiento de aguas residuales y la producción de bioenergía.</p>
+        <ul>
+          <li><strong>Estructura celular simple:</strong> no poseen núcleo; el ADN se encuentra libre en el citoplasma y carecen de organelos membranosos.</li>
+          <li><strong>Reproducción asexual:</strong> se reproducen principalmente por fisión binaria y pueden intercambiar material genético mediante conjugación, transformación o transducción.</li>
+          <li><strong>Diversidad metabólica:</strong> pueden ser autótrofos o heterótrofos, con respiración aeróbica o anaeróbica, participando en fijación de nitrógeno, descomposición de materia orgánica y oxidación de compuestos tóxicos.</li>
+          <li><strong>Adaptación a ambientes extremos:</strong> algunas arqueas habitan ambientes extremos como fuentes termales o salinas.</li>
+          <li><strong>Importancia ecológica:</strong> son esenciales en ciclos biogeoquímicos y actúan como descomponedores y agentes de biorremediación.</li>
+        </ul>
+        <h4>Ejemplos o casos subtema 2</h4>
+        <p><strong>Biolixiviación de minerales con bacterias en la minería peruana.</strong> En el sector minero del Perú se ha implementado el uso de bacterias como <em>Acidithiobacillus ferrooxidans</em> para la biolixiviación, un proceso biotecnológico que utiliza procariontes para extraer metales como el cobre de minerales de baja ley. Estas bacterias oxidan el sulfuro de hierro presente en los minerales, liberando el metal de forma más eficiente y con menor impacto ambiental que los métodos químicos tradicionales.</p>
+        <p>Este proceso se ha aplicado en operaciones mineras en Cajamarca y Moquegua, reduciendo el uso de reactivos tóxicos y minimizando la generación de residuos peligrosos. Demuestra cómo el conocimiento de las características metabólicas de los procariontes permite diseñar procesos industriales más sostenibles y aplicar tecnologías limpias en sectores tradicionalmente contaminantes.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 3: Diversidad y clasificación de virus</div>
+      <div class="accordion-content">
+        <p>Los virus son entidades biológicas que, aunque no se consideran organismos vivos en sentido estricto, desempeñan un papel fundamental en los ecosistemas. Su estudio es relevante para la biología, la ecología y la ingeniería ambiental, especialmente en el contexto de la salud ambiental, el control biológico, la biotecnología y la vigilancia epidemiológica.</p>
+        <ul>
+          <li><strong>Acelularidad:</strong> no poseen estructura celular ni metabolismo propio y requieren infectar células huésped para replicarse.</li>
+          <li><strong>Material genético:</strong> pueden contener ADN o ARN, de cadena simple o doble.</li>
+          <li><strong>Estructura viral:</strong> cápside proteica que protege el material genético y, en algunos casos, envoltura lipídica con glicoproteínas.</li>
+          <li><strong>Clasificación taxonómica:</strong> regida por el ICTV, basada en tipo de ácido nucleico, simetría de la cápside, presencia de envoltura, tamaño y mecanismos de replicación.</li>
+          <li><strong>Diversidad ecológica:</strong> infectan todos los dominios de la vida y regulan poblaciones microbianas, median transferencia genética y afectan procesos ecológicos.</li>
+        </ul>
+        <h4>Ejemplos o casos subtema 3</h4>
+        <p><strong>Vigilancia epidemiológica del SARS-CoV-2 en aguas residuales en Lima, Perú.</strong> Durante la pandemia de COVID-19, investigadores peruanos implementaron sistemas de vigilancia ambiental mediante el análisis de aguas residuales, detectando fragmentos de ARN del virus SARS-CoV-2 en desagües urbanos y anticipando brotes comunitarios.</p>
+        <p>Este caso demuestra cómo el conocimiento taxonómico y molecular de los virus permite diseñar sistemas de monitoreo ambiental, aplicar herramientas de biología molecular en contextos urbanos e integrar la vigilancia ambiental con la gestión sanitaria.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 4: Rol ecológico de procariontes y virus</div>
+      <div class="accordion-content">
+        <p>Los procariontes y los virus desempeñan funciones ecológicas esenciales en los ecosistemas. Aunque su tamaño microscópico los hace invisibles al ojo humano, su impacto en los ciclos de la materia, la regulación de poblaciones y la salud ambiental es profundo.</p>
+        <ul>
+          <li><strong>Ciclo del nitrógeno:</strong> bacterias como <em>Rhizobium</em> fijan nitrógeno atmosférico; otras realizan nitrificación y desnitrificación.</li>
+          <li><strong>Ciclo del carbono:</strong> procariontes descomponen materia orgánica, liberando CO₂ y metano; arqueas metanogénicas producen metano en ambientes anaerobios.</li>
+          <li><strong>Ciclo del azufre y fósforo:</strong> bacterias reducen sulfatos y movilizan fósforo en el suelo.</li>
+          <li><strong>Biorremediación:</strong> algunas especies degradan contaminantes orgánicos o inmovilizan metales pesados.</li>
+          <li><strong>Virus en ecosistemas:</strong> regulan poblaciones microbianas, median transferencia genética y afectan productividad primaria y descomposición.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Subtema 5: Aplicaciones ambientales de procariontes y virus</div>
+      <div class="accordion-content">
+        <h4>Aplicaciones ambientales de los procariontes</h4>
+        <ul>
+          <li><strong>Biorremediación:</strong> uso de bacterias para degradar contaminantes orgánicos o inmovilizar metales pesados, como <em>Pseudomonas putida</em> en suelos contaminados.</li>
+          <li><strong>Tratamiento de aguas residuales:</strong> bacterias aeróbicas y anaeróbicas descomponen materia orgánica en lodos activados, biodigestores y filtros percoladores, reduciendo la DBO y la eliminación de nutrientes.</li>
+          <li><strong>Producción de biofertilizantes:</strong> bacterias fijadoras de nitrógeno mejoran la fertilidad del suelo sin fertilizantes químicos, promoviendo agricultura sostenible.</li>
+          <li><strong>Captura de gases contaminantes:</strong> bacterias metanotróficas pueden oxidar metano en vertederos; arqueas metanogénicas se usan en biodigestores para generar biogás.</li>
+          <li><strong>Biofiltración:</strong> sistemas que utilizan comunidades bacterianas para eliminar compuestos volátiles y olores en emisiones industriales.</li>
+        </ul>
+        <h4>Aplicaciones ambientales de los virus</h4>
+        <ul>
+          <li><strong>Control biológico:</strong> los bacteriófagos se utilizan para controlar bacterias patógenas en ambientes acuáticos y agrícolas.</li>
+          <li><strong>Monitoreo ambiental:</strong> la detección de virus en aguas residuales permite evaluar la presencia de patógenos humanos y animales.</li>
+          <li><strong>Transferencia genética dirigida:</strong> virus modificados pueden introducir genes específicos en bacterias para mejorar su capacidad de degradación de contaminantes.</li>
+        </ul>
+        <h4>Ejemplos de aplicación</h4>
+        <p><strong>Uso de bacterias y virus en la acuicultura sostenible en Ecuador.</strong> El Instituto Nacional de Pesca ha promovido el uso de bacterias probióticas y bacteriófagos en sistemas de cultivo de camarón para reducir el uso de antibióticos y mejorar la calidad del agua. Las bacterias ayudan a descomponer materia orgánica y estabilizar parámetros fisicoquímicos, mientras que los fagos controlan patógenos como <em>Vibrio</em> spp.</p>
+        <p>Este enfoque ha permitido mejorar la productividad sin comprometer la salud ambiental, reducir la resistencia bacteriana a antibióticos y promover prácticas sostenibles en la acuicultura latinoamericana. Demuestra cómo los conocimientos sobre procariontes y virus se traducen en tecnologías limpias, soluciones basadas en la naturaleza e innovación biotecnológica en sectores productivos, reduciendo impactos ambientales mediante el reemplazo de insumos químicos por agentes biológicos.</p>
+      </div>
+    </div>
+  </div>
+  <h3>Autoevaluación</h3>
+  <div class="quiz-container" id="quiz-tema2"></div>
+</section>
+<section id="conclusiones" class="content-section">
+  <h2>Conclusiones</h2>
+  <div class="accordion">
+    <div class="accordion-item">
+      <div class="accordion-header">Respiración Celular y Fotosíntesis</div>
+      <div class="accordion-content">
+        <ul>
+          <li>Los procesos de fotosíntesis y respiración celular son pilares bioquímicos del equilibrio ecológico, ya que regulan el flujo de energía y el ciclo del carbono en los ecosistemas. Su comprensión permite analizar cómo las actividades humanas alteran estos procesos y contribuyen al cambio climático.</li>
+          <li>La interdependencia entre fotosíntesis y respiración celular refleja la conexión entre organismos autótrofos y heterótrofos, lo que evidencia la necesidad de conservar la biodiversidad funcional para mantener la estabilidad de los ecosistemas y diseñar estrategias de restauración ecológica.</li>
+          <li>Las aplicaciones biotecnológicas de estos procesos ofrecen soluciones innovadoras para la transición hacia modelos sostenibles, como la producción de biocombustibles, la captura de carbono y el tratamiento de residuos, abriendo oportunidades profesionales en tecnologías limpias y gestión ambiental.</li>
+          <li>El estudio de estos procesos celulares invita a reflexionar sobre el papel de la ciencia en la mitigación de los impactos ambientales y motiva a explorar cómo los conocimientos biológicos pueden aplicarse en contextos territoriales para enfrentar desafíos como la contaminación, la pérdida de biodiversidad y la crisis climática.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Clasificación de los Seres Vivos: Diversidad de Procariontes y Virus</div>
+      <div class="accordion-content">
+        <ul>
+          <li>La clasificación biológica es una herramienta esencial para comprender la diversidad de la vida y su organización ecológica, permitiendo identificar especies clave en los ecosistemas y evaluar su función en los ciclos naturales, fundamental para la conservación y la gestión ambiental.</li>
+          <li>Los procariontes y virus, aunque microscópicos, tienen un impacto profundo en la salud de los ecosistemas, participando en procesos como la biorremediación, el reciclaje de nutrientes y el control de poblaciones, evidenciando el potencial de la microbiología como aliada de la sostenibilidad.</li>
+          <li>Las aplicaciones ambientales de estos microorganismos demuestran cómo la biotecnología puede transformar sectores productivos como la minería, la agricultura y la acuicultura, promoviendo prácticas más limpias, eficientes y respetuosas con el medio ambiente y ampliando el campo de acción del ingeniero ambiental.</li>
+          <li>La integración de conocimientos taxonómicos, ecológicos y tecnológicos sobre procariontes y virus fomenta una visión interdisciplinaria y crítica, clave para diseñar soluciones innovadoras y contextualizadas frente a los desafíos ambientales contemporáneos.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="consolidacion" class="content-section">
+  <h1>Consolidación de aprendizajes</h1>
+  <div class="game-container">
+    <h2>Sopa de Letras</h2>
+    <p class="game-instructions">Encuentra las 7 palabras clave de la sesión. Haz clic en la primera y última letra de cada palabra para seleccionarla.</p>
+    <ul id="ws-word-list"></ul>
+    <div id="word-search-grid"></div>
+    <div id="ws-progress" style="color: var(--azul-brillante); font-weight: bold; text-align: center; margin-bottom: 0.5rem;">Palabras encontradas: 0 de 7</div>
+    <div id="ws-message" class="game-message"></div>
+    <button id="reset-ws-btn" class="reset-game-btn" disabled>Reiniciar Sopa de Letras</button>
+  </div>
+  <div class="game-container">
+    <h2>Juego del Ahorcado</h2>
+    <p class="game-instructions">Adivina la palabra oculta antes de que se completen los 6 intentos. ¡Usa el teclado virtual!</p>
+    <div id="hangman-display">
+      <svg id="hangman-drawing" viewBox="0 0 200 250">
+        <line x1="10" y1="230" x2="190" y2="230" stroke="var(--azul-oscuro)" stroke-width="4" />
+        <line x1="50" y1="230" x2="50" y2="20" stroke="var(--azul-oscuro)" stroke-width="4" />
+        <line x1="50" y1="20" x2="150" y2="20" stroke="var(--azul-oscuro)" stroke-width="4" />
+        <line x1="150" y1="20" x2="150" y2="50" stroke="var(--azul-oscuro)" stroke-width="4" />
+        <circle id="hangman-head" cx="150" cy="70" r="20" stroke="var(--rojo-institucional)" stroke-width="4" fill="none" visibility="hidden" />
+        <line id="hangman-body" x1="150" y1="90" x2="150" y2="150" stroke="var(--rojo-institucional)" stroke-width="4" visibility="hidden" />
+        <line id="hangman-arm-l" x1="150" y1="110" x2="120" y2="140" stroke="var(--rojo-institucional)" stroke-width="4" visibility="hidden" />
+        <line id="hangman-arm-r" x1="150" y1="110" x2="180" y2="140" stroke="var(--rojo-institucional)" stroke-width="4" visibility="hidden" />
+        <line id="hangman-leg-l" x1="150" y1="150" x2="120" y2="190" stroke="var(--rojo-institucional)" stroke-width="4" visibility="hidden" />
+        <line id="hangman-leg-r" x1="150" y1="150" x2="180" y2="190" stroke="var(--rojo-institucional)" stroke-width="4" visibility="hidden" />
+      </svg>
+      <div>
+        <div id="word-display"></div>
+        <div id="hangman-hint" style="color: var(--azul-brillante); font-weight: 600; text-align: center; margin-top: 0.5rem;"></div>
+      </div>
+    </div>
+    <div id="attempts-info" style="color: var(--azul-brillante); font-weight: bold; text-align: center;">Intentos: 0 de 6</div>
+    <div id="game-message" class="game-message"></div>
+    <div id="keyboard"></div>
+    <button id="reset-hangman-btn" class="reset-game-btn" disabled>Reiniciar Ahorcado</button>
+  </div>
+  <div class="game-container">
+    <h2>Relacionar Conceptos</h2>
+    <p class="game-instructions">Haz clic en un concepto de la izquierda y luego en su definición correcta de la derecha.</p>
+    <div id="matching-score">Pares correctos: 0 de 5</div>
+    <div id="matching-game-container">
+      <div class="matching-column" id="concepts-column"><h3>Conceptos</h3></div>
+      <div class="matching-column" id="definitions-column"><h3>Definiciones</h3></div>
+    </div>
+    <div id="matching-message" class="game-message"></div>
+    <button id="reset-matching-btn" class="reset-game-btn" disabled>Reiniciar Juego</button>
+  </div>
+  <div class="interactive-box">
+    <h3>Preguntas de metacognición</h3>
+    <div class="reflection-question">
+      <p><strong>1.</strong> ¿De qué manera podrías aplicar los conocimientos sobre fotosíntesis y respiración celular en el diseño de un proyecto ambiental en tu comunidad?</p>
+      <textarea placeholder="Escribe tu reflexión aquí..."></textarea>
+    </div>
+    <div class="reflection-question">
+      <p><strong>2.</strong> ¿Qué habilidades científicas y profesionales crees que necesitas fortalecer para implementar tecnologías basadas en procesos celulares?</p>
+      <textarea placeholder="Escribe tu reflexión aquí..."></textarea>
+    </div>
+    <div class="reflection-question">
+      <p><strong>3.</strong> ¿Por qué es importante que un ingeniero ambiental comprenda la clasificación y diversidad de microorganismos en su trabajo profesional?</p>
+      <textarea placeholder="Escribe tu reflexión aquí..."></textarea>
+    </div>
+    <div class="reflection-question">
+      <p><strong>4.</strong> ¿Cómo podrías utilizar el conocimiento sobre procariontes en un proyecto de restauración ecológica o tratamiento de aguas residuales?</p>
+      <textarea placeholder="Escribe tu reflexión aquí..."></textarea>
+    </div>
+  </div>
+</section>
+<section id="referencias" class="content-section">
+  <h1>Referencias</h1>
+  <div class="references-list">
+    <p>Harwood, J., &amp; Wilkin, D. (2025). <em>La conexión entre respiración celular y fotosíntesis</em>. CK-12 Foundation.</p>
+    <p>Rodríguez, J. (2025). <em>Guía del Maestro: Fotosíntesis y Respiración Celular</em>. Centros de Excelencia en Ciencias y Matemáticas.</p>
+    <p>Wiki Biología. (2025). <em>Fotosíntesis y Respiración Celular: Procesos Vitales en Plantas</em>.</p>
+    <p>Racca, S., &amp; Peralta, B. (2025). <em>Clasificación de los seres vivos y diversidad microbiana</em>. UCSF Virtual.</p>
+    <p>Khan Academy. (2025). <em>Diversidad y clasificación de los procariontes</em>.</p>
+    <p>UNSE. (2015). <em>Módulo de Biología para ingreso a Medicina</em>. Universidad Nacional de Santiago del Estero.</p>
+  </div>
+</section>
+</main>
+</div>
+<div class="pdf-prepare-overlay" id="pdf-overlay">
+  <div class="spinner"></div>
+  <p>Preparando la descarga en PDF...</p>
+</div>
+<script>
+function setEqualIntroCardHeights() {
+  const cards = document.querySelectorAll('#introduccion .intro-card');
+  if (cards.length < 2) return;
+  cards.forEach(card => card.style.minHeight = 'auto');
+  setTimeout(() => {
+    let maxHeight = 0;
+    cards.forEach(card => { if (card.offsetHeight > maxHeight) maxHeight = card.offsetHeight; });
+    cards.forEach(card => card.style.minHeight = `${maxHeight}px`);
+  }, 50);
+}
+window.addEventListener('load', setEqualIntroCardHeights);
+window.addEventListener('resize', setEqualIntroCardHeights);
+
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('.content-section');
+function showSection(id) {
+  sections.forEach(section => { section.classList.remove('active'); section.style.display = 'none'; });
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'block';
+    if (id === 'introduccion') setEqualIntroCardHeights();
+    target.scrollIntoView({ behavior: 'smooth' });
+  }
+  navLinks.forEach(link => link.classList.remove('active'));
+  const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+  if (activeLink) activeLink.classList.add('active');
+}
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const id = link.getAttribute('href').replace('#','');
+    showSection(id);
+  });
+});
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  document.getElementById('landing-page').style.display = 'none';
+  document.getElementById('main-container').style.display = 'block';
+  showSection('introduccion');
+});
+
+document.getElementById('back-to-cover').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('main-container').style.display = 'none';
+  document.getElementById('landing-page').style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  navLinks.forEach(link => link.classList.remove('active'));
+});
+
+const accordionHeaders = document.querySelectorAll('.accordion-header');
+accordionHeaders.forEach(header => {
+  header.addEventListener('click', () => {
+    const item = header.parentElement;
+    item.classList.toggle('active');
+    const content = item.querySelector('.accordion-content');
+    if (item.classList.contains('active')) {
+      content.style.maxHeight = content.scrollHeight + 'px';
+    } else {
+      content.style.maxHeight = null;
+    }
+  });
+});
+
+const quizData = {
+  tema1: [
+    { question: '¿Cuál de las siguientes afirmaciones describe mejor la relación entre la fotosíntesis y la respiración celular en los ecosistemas?', options: ['Son procesos independientes que ocurren en organismos distintos.', 'La fotosíntesis produce energía, mientras que la respiración celular la destruye.', 'Son procesos complementarios que regulan el flujo de energía y el ciclo del carbono.', 'La respiración celular ocurre únicamente en plantas, mientras que la fotosíntesis ocurre en animales.'], correct: 2, feedback: 'Fotosíntesis y respiración forman un ciclo energético y de carbono complementario en los ecosistemas.' },
+    { question: '¿Por qué la fotosíntesis es considerada una herramienta clave en la mitigación del cambio climático?', options: ['Porque reduce la temperatura del suelo mediante la sombra de las plantas.', 'Porque transforma el oxígeno en dióxido de carbono.', 'Porque captura dióxido de carbono atmosférico y lo convierte en materia orgánica.', 'Porque aumenta la producción de metano en los ecosistemas.'], correct: 2, feedback: 'La fotosíntesis fija carbono atmosférico en biomasa, reduciendo CO₂ libre.' },
+    { question: '¿Cuál es una implicancia ambiental del uso industrial de la fermentación celular para producir biocombustibles?', options: ['Disminuye la biodiversidad vegetal.', 'Genera residuos sólidos que pueden ser utilizados como alimento animal.', 'Produce residuos líquidos que requieren tratamiento para evitar contaminación.', 'No tiene implicancias ambientales significativas.'], correct: 2, feedback: 'Los efluentes de fermentación deben tratarse para prevenir contaminación hídrica.' },
+    { question: '¿Qué aspecto de la respiración celular es aprovechado en biodigestores para el tratamiento de residuos orgánicos?', options: ['La producción de oxígeno por las células.', 'La generación de energía mediante procesos anaerobios que producen biogás.', 'La fotosíntesis de las bacterias en ambientes sin luz.', 'La reproducción rápida de células animales.'], correct: 1, feedback: 'La respiración anaerobia permite transformar residuos en biogás utilizable como energía.' }
+  ],
+  tema2: [
+    { question: '¿Cuál es la principal ventaja de la clasificación biológica para la ingeniería ambiental?', options: ['Permite identificar animales en peligro de extinción.', 'Facilita la creación de nombres científicos para los organismos.', 'Ayuda a reconocer especies clave en los ecosistemas y sus funciones ecológicas.', 'Clasifica los organismos según su tamaño y color.'], correct: 2, feedback: 'La clasificación permite ubicar especies clave y comprender sus roles ecológicos para gestionarlas.' },
+    { question: '¿Qué característica permite a los procariontes ser útiles en procesos de biorremediación?', options: ['Su capacidad de reproducirse rápidamente.', 'Su habilidad para causar enfermedades.', 'Su diversidad metabólica que les permite transformar compuestos contaminantes.', 'Su estructura celular compleja con múltiples organelos.'], correct: 2, feedback: 'La versatilidad metabólica de los procariontes posibilita degradar contaminantes variados.' },
+    { question: '¿Cuál es una función ecológica relevante de los virus en los ecosistemas acuáticos?', options: ['Producir oxígeno mediante fotosíntesis.', 'Fijar nitrógeno en el agua.', 'Regular poblaciones microbianas mediante la infección de bacterias.', 'Descomponer materia orgánica como los hongos.'], correct: 2, feedback: 'Los virus controlan poblaciones microbianas, modulando dinámicas ecológicas acuáticas.' },
+    { question: '¿Qué aplicación ambiental se ha desarrollado a partir del uso de bacteriófagos en acuicultura?', options: ['Aumento de la temperatura del agua para mejorar la reproducción.', 'Eliminación de metales pesados mediante oxidación.', 'Control de bacterias patógenas sin uso de antibióticos.', 'Producción de oxígeno para mejorar la calidad del agua.'], correct: 2, feedback: 'Los fagos permiten controlar patógenos en acuicultura reduciendo el uso de antibióticos.' }
+  ]
+};
+
+function renderQuiz(containerId, data) {
+  const container = document.getElementById(containerId);
+  data.forEach((item, index) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'quiz-question';
+    const qText = document.createElement('p');
+    qText.textContent = `${index + 1}. ${item.question}`;
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'quiz-options';
+    item.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = `${String.fromCharCode(97 + i)}) ${opt}`;
+      btn.dataset.correct = i === item.correct;
+      btn.addEventListener('click', () => {
+        optsDiv.querySelectorAll('button').forEach(b => b.disabled = true);
+        btn.classList.add(i === item.correct ? 'correct' : 'incorrect');
+        const correctBtn = optsDiv.children[item.correct];
+        correctBtn.classList.add('correct');
+        feedbackDiv.className = i === item.correct ? 'quiz-feedback correct' : 'quiz-feedback incorrect';
+        feedbackDiv.textContent = item.feedback;
+        feedbackDiv.style.display = 'block';
+      });
+      optsDiv.appendChild(btn);
+    });
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = 'quiz-feedback';
+    qDiv.append(qText, optsDiv, feedbackDiv);
+    container.appendChild(qDiv);
+  });
+}
+
+renderQuiz('quiz-tema1', quizData.tema1);
+renderQuiz('quiz-tema2', quizData.tema2);
+
+const wordSearchWords = ['FOTOSINTESIS', 'RESPIRACION', 'ATP', 'GLUCOSA', 'MICROALGAS', 'BIORREMEDIACION', 'PROCARIONTES'];
+const gridSize = 10;
+let wordSearchGrid = [];
+let wsSelected = [];
+let wsFoundCount = 0;
+const resetWsBtn = document.getElementById('reset-ws-btn');
+const wsProgress = document.getElementById('ws-progress');
+
+function createEmptyGrid() { wordSearchGrid = Array.from({ length: gridSize }, () => Array(gridSize).fill('')); }
+function placeWord(word) {
+  const directions = [[0,1], [1,0], [1,1], [-1,1]];
+  let placed = false;
+  while (!placed) {
+    const dir = directions[Math.floor(Math.random() * directions.length)];
+    const row = Math.floor(Math.random() * gridSize);
+    const col = Math.floor(Math.random() * gridSize);
+    if (canPlace(word, row, col, dir)) {
+      for (let i = 0; i < word.length; i++) wordSearchGrid[row + dir[0]*i][col + dir[1]*i] = word[i];
+      placed = true;
+    }
+  }
+}
+function canPlace(word, row, col, dir) {
+  for (let i = 0; i < word.length; i++) {
+    const r = row + dir[0]*i; const c = col + dir[1]*i;
+    if (r < 0 || c < 0 || r >= gridSize || c >= gridSize) return false;
+    const cell = wordSearchGrid[r][c];
+    if (cell !== '' && cell !== word[i]) return false;
+  }
+  return true;
+}
+function fillGridRandom() {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (let r = 0; r < gridSize; r++) {
+    for (let c = 0; c < gridSize; c++) {
+      if (!wordSearchGrid[r][c]) wordSearchGrid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+  }
+}
+function renderGrid() {
+  const gridEl = document.getElementById('word-search-grid');
+  gridEl.innerHTML = '';
+  wsSelected = [];
+  wordSearchGrid.forEach((row, r) => {
+    row.forEach((letter, c) => {
+      const cell = document.createElement('div');
+      cell.className = 'ws-cell';
+      cell.textContent = letter;
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      cell.addEventListener('click', () => handleWsClick(cell));
+      gridEl.appendChild(cell);
+    });
+  });
+}
+function renderWordList() {
+  const list = document.getElementById('ws-word-list');
+  list.innerHTML = '';
+  wordSearchWords.forEach(word => {
+    const li = document.createElement('li');
+    li.textContent = word;
+    li.id = `word-${word}`;
+    list.appendChild(li);
+  });
+  wsFoundCount = 0;
+  wsProgress.textContent = `Palabras encontradas: ${wsFoundCount} de ${wordSearchWords.length}`;
+}
+function handleWsClick(cell) {
+  resetWsBtn.disabled = false; resetWsBtn.style.opacity = 1;
+  if (wsSelected.length === 0) {
+    wsSelected.push(cell); cell.classList.add('selected');
+  } else if (wsSelected.length === 1) {
+    wsSelected.push(cell); checkSelection();
+  } else {
+    wsSelected.forEach(c => c.classList.remove('selected'));
+    wsSelected = [cell]; cell.classList.add('selected');
+  }
+}
+function checkSelection() {
+  const [start, end] = wsSelected;
+  const startRow = parseInt(start.dataset.row); const startCol = parseInt(start.dataset.col);
+  const endRow = parseInt(end.dataset.row); const endCol = parseInt(end.dataset.col);
+  const deltaRow = Math.sign(endRow - startRow); const deltaCol = Math.sign(endCol - startCol);
+  let word = ''; let r = startRow; let c = startCol;
+  while (true) {
+    const index = r * gridSize + c;
+    const letter = document.querySelector(`#word-search-grid .ws-cell:nth-child(${index + 1})`).textContent;
+    word += letter;
+    if (r === endRow && c === endCol) break;
+    r += deltaRow; c += deltaCol;
+    if (r < 0 || c < 0 || r >= gridSize || c >= gridSize) break;
+  }
+  if (wordSearchWords.includes(word)) {
+    wsSelected.forEach(c => c.classList.add('found'));
+    document.getElementById(`word-${word}`).classList.add('found');
+    wsFoundCount++; wsProgress.textContent = `Palabras encontradas: ${wsFoundCount} de ${wordSearchWords.length}`;
+    if (wsFoundCount === wordSearchWords.length) document.getElementById('ws-message').textContent = '¡Excelente! Has encontrado todas las palabras.';
+  } else {
+    wsSelected.forEach(c => c.classList.remove('selected'));
+  }
+  wsSelected = [];
+}
+function initWordSearch() {
+  createEmptyGrid(); wordSearchWords.forEach(placeWord); fillGridRandom(); renderWordList(); renderGrid();
+  document.getElementById('ws-message').textContent = '';
+  resetWsBtn.disabled = true; resetWsBtn.style.opacity = 0.6;
+}
+resetWsBtn.addEventListener('click', initWordSearch);
+
+const hangmanWords = [
+  { word: 'FOTOSINTESIS', hint: 'Proceso que convierte energía solar en química.' },
+  { word: 'PROCARIONTES', hint: 'Dominan ciclos biogeoquímicos sin núcleo celular.' },
+  { word: 'BIOGAS', hint: 'Energía generada en biodigestores anaerobios.' },
+  { word: 'CLASIFICACION', hint: 'Organiza la diversidad biológica en jerarquías.' },
+  { word: 'MICROALGAS', hint: 'Productoras de biocombustibles y captura de CO₂.' }
+];
+let currentHangman = {};
+let attempts = 0;
+const maxAttempts = 6;
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const hangmanParts = ['hangman-head','hangman-body','hangman-arm-l','hangman-arm-r','hangman-leg-l','hangman-leg-r'];
+const resetHangmanBtn = document.getElementById('reset-hangman-btn');
+function initHangman() {
+  currentHangman = hangmanWords[Math.floor(Math.random()*hangmanWords.length)];
+  attempts = 0;
+  document.getElementById('attempts-info').textContent = `Intentos: ${attempts} de ${maxAttempts}`;
+  document.getElementById('word-display').textContent = currentHangman.word.replace(/./g,'_ ');
+  document.getElementById('game-message').textContent = '';
+  document.getElementById('hangman-hint').textContent = `Pista: ${currentHangman.hint}`;
+  hangmanParts.forEach(id => document.getElementById(id).setAttribute('visibility','hidden'));
+  const keyboard = document.getElementById('keyboard');
+  keyboard.innerHTML = '';
+  alphabet.split('').forEach(letter => {
+    const btn = document.createElement('button');
+    btn.textContent = letter;
+    btn.addEventListener('click', () => handleGuess(btn, letter));
+    keyboard.appendChild(btn);
+  });
+  resetHangmanBtn.disabled = true; resetHangmanBtn.style.opacity = 0.6;
+}
+function handleGuess(btn, letter) {
+  resetHangmanBtn.disabled = false; resetHangmanBtn.style.opacity = 1;
+  btn.disabled = true;
+  if (currentHangman.word.includes(letter)) {
+    const display = document.getElementById('word-display').textContent.replace(/\s/g,'');
+    let newDisplay = '';
+    for (let i = 0; i < currentHangman.word.length; i++) {
+      newDisplay += (currentHangman.word[i] === letter || display[i] !== '_') ? currentHangman.word[i] : '_';
+    }
+    document.getElementById('word-display').textContent = newDisplay.split('').join(' ');
+    if (!newDisplay.includes('_')) {
+      document.getElementById('game-message').textContent = '¡Ganaste! Descubriste la palabra.';
+      document.querySelectorAll('#keyboard button').forEach(b => b.disabled = true);
+    }
+  } else {
+    hangmanParts[attempts] && document.getElementById(hangmanParts[attempts]).setAttribute('visibility','visible');
+    attempts++;
+    document.getElementById('attempts-info').textContent = `Intentos: ${attempts} de ${maxAttempts}`;
+    if (attempts >= maxAttempts) {
+      document.getElementById('game-message').textContent = `Has perdido. La palabra era ${currentHangman.word}.`;
+      document.getElementById('word-display').textContent = currentHangman.word.split('').join(' ');
+      document.querySelectorAll('#keyboard button').forEach(b => b.disabled = true);
+    }
+  }
+}
+resetHangmanBtn.addEventListener('click', initHangman);
+
+const pairs = [
+  { concept: 'Fotosíntesis', definition: 'Proceso anabólico que captura luz y fija CO₂ en glucosa.' },
+  { concept: 'Respiración celular', definition: 'Ruta catabólica que oxida glucosa para generar ATP.' },
+  { concept: 'Procariontes', definition: 'Microorganismos sin núcleo que muestran gran diversidad metabólica.' },
+  { concept: 'Biorremediación', definition: 'Uso de microorganismos para remover contaminantes del ambiente.' },
+  { concept: 'Clasificación biológica', definition: 'Organización jerárquica de organismos con base científica.' }
+];
+let selectedConcept = null;
+let selectedDefinition = null;
+let correctMatches = 0;
+const matchingScore = document.getElementById('matching-score');
+const matchingMessage = document.getElementById('matching-message');
+const resetMatchingBtn = document.getElementById('reset-matching-btn');
+function renderMatchingGame() {
+  const conceptsCol = document.getElementById('concepts-column');
+  const defsCol = document.getElementById('definitions-column');
+  conceptsCol.querySelectorAll('.match-item').forEach(n => n.remove());
+  defsCol.querySelectorAll('.match-item').forEach(n => n.remove());
+  selectedConcept = null; selectedDefinition = null; correctMatches = 0;
+  matchingScore.textContent = `Pares correctos: ${correctMatches} de ${pairs.length}`;
+  matchingMessage.textContent = '';
+  resetMatchingBtn.disabled = true; resetMatchingBtn.style.opacity = 0.6;
+  pairs.forEach((pair, idx) => {
+    const cDiv = document.createElement('div');
+    cDiv.className = 'match-item';
+    cDiv.textContent = pair.concept;
+    cDiv.dataset.index = idx;
+    cDiv.addEventListener('click', () => selectConcept(cDiv));
+    conceptsCol.appendChild(cDiv);
+  });
+  const shuffled = [...pairs].sort(() => Math.random() - 0.5);
+  shuffled.forEach(def => {
+    const dDiv = document.createElement('div');
+    dDiv.className = 'match-item';
+    dDiv.textContent = def.definition;
+    dDiv.dataset.concept = def.concept;
+    dDiv.addEventListener('click', () => selectDefinition(dDiv));
+    defsCol.appendChild(dDiv);
+  });
+}
+function clearErrors() { document.querySelectorAll('.match-item.incorrect').forEach(item => item.classList.remove('incorrect')); }
+function selectConcept(element) {
+  clearErrors(); resetMatchingBtn.disabled = false; resetMatchingBtn.style.opacity = 1;
+  if (element.classList.contains('correct')) return;
+  document.querySelectorAll('#concepts-column .match-item').forEach(item => item.classList.remove('selected'));
+  element.classList.add('selected');
+  selectedConcept = element;
+  if (selectedDefinition) evaluateMatch();
+}
+function selectDefinition(element) {
+  clearErrors(); resetMatchingBtn.disabled = false; resetMatchingBtn.style.opacity = 1;
+  if (element.classList.contains('correct')) return;
+  document.querySelectorAll('#definitions-column .match-item').forEach(item => item.classList.remove('selected'));
+  element.classList.add('selected');
+  selectedDefinition = element;
+  if (selectedConcept) evaluateMatch();
+}
+function evaluateMatch() {
+  if (selectedDefinition.dataset.concept === selectedConcept.textContent) {
+    selectedConcept.classList.add('correct');
+    selectedDefinition.classList.add('correct');
+    selectedConcept.classList.remove('selected');
+    selectedDefinition.classList.remove('selected');
+    correctMatches++;
+    matchingScore.textContent = `Pares correctos: ${correctMatches} de ${pairs.length}`;
+    matchingMessage.textContent = '¡Bien! Sigue adelante.';
+  } else {
+    selectedConcept.classList.add('incorrect');
+    selectedDefinition.classList.add('incorrect');
+    setTimeout(() => {
+      selectedConcept.classList.remove('incorrect');
+      selectedDefinition.classList.remove('incorrect');
+      selectedConcept.classList.remove('selected');
+      selectedDefinition.classList.remove('selected');
+    }, 600);
+    matchingMessage.textContent = 'Revisa los conceptos e intenta nuevamente.';
+  }
+  selectedConcept = null; selectedDefinition = null;
+  if (correctMatches === pairs.length) matchingMessage.textContent = '¡Has completado todas las parejas!';
+}
+resetMatchingBtn.addEventListener('click', renderMatchingGame);
+
+const overlay = document.getElementById('pdf-overlay');
+document.getElementById('download-pdf').addEventListener('click', async () => {
+  overlay.style.display = 'flex';
+  const originalActiveSection = document.querySelector('.content-section.active')?.id || 'introduccion';
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'pt', 'a4');
+  pdf.setFont('helvetica');
+  for (const section of sections) {
+    sections.forEach(sec => sec.style.display = 'none');
+    section.style.display = 'block';
+    section.classList.add('active');
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const canvas = await html2canvas(section, {
+      scale: 2,
+      useCORS: true,
+      onclone: (doc) => {
+        doc.querySelectorAll('.accordion-item').forEach(item => {
+          item.classList.add('active');
+          const content = item.querySelector('.accordion-content');
+          if (content) content.style.maxHeight = 'none';
+        });
+        doc.querySelectorAll('iframe').forEach(iframe => {
+          const placeholder = doc.createElement('div');
+          placeholder.textContent = 'Contenido interactivo disponible en la versión web.';
+          placeholder.style.padding = '1rem';
+          placeholder.style.background = '#e9ecef';
+          placeholder.style.textAlign = 'center';
+          iframe.parentNode.replaceChild(placeholder, iframe);
+        });
+        doc.querySelectorAll('.quiz-options').forEach(optContainer => {
+          Array.from(optContainer.children).forEach(btn => {
+            if (btn.dataset.correct === 'true') btn.classList.add('correct');
+          });
+        });
+      }
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    let position = 0; let heightLeft = pdfHeight; let firstPage = true;
+    while (heightLeft > 0) {
+      const sliceHeight = Math.min(heightLeft, pageHeight);
+      const canvasPage = document.createElement('canvas');
+      canvasPage.width = imgProps.width;
+      canvasPage.height = (sliceHeight * imgProps.width) / pdfWidth;
+      const ctx = canvasPage.getContext('2d');
+      ctx.drawImage(canvas, 0, -position * (imgProps.width / pdfWidth));
+      const pageData = canvasPage.toDataURL('image/png');
+      if (!firstPage) pdf.addPage();
+      pdf.addImage(pageData, 'PNG', 0, 0, pdfWidth, sliceHeight, undefined, 'FAST');
+      heightLeft -= sliceHeight;
+      position += sliceHeight;
+      firstPage = false;
+    }
+  }
+  pdf.save('biologia-ecologia-sesion3.pdf');
+  sections.forEach(section => section.style.display = '');
+  showSection(originalActiveSection);
+  overlay.style.display = 'none';
+});
+
+initWordSearch();
+initHangman();
+renderMatchingGame();
+</script>
+</body>
+</html>
